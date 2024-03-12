@@ -2,7 +2,7 @@ import { getToastState } from '@store';
 import axios from 'axios';
 
 export const clientApi = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "http://localhost:9999",
   timeout: 10000
 });
 

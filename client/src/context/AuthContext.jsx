@@ -1,22 +1,8 @@
+import { getInfoApi } from '@api/auth';
 import { Loading } from '@components/base';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-export const INITIAL_USER_INFO = {
-    "_id": "65d367864697cd06a2b51cc6",
-    "fullName": "Admin",
-    "username": "admin",
-    "email": "bachtv150902@gmail.com",
-    "password": "$2b$10$gd9Hbj2tIKQoOelVl7/c5uCM3.4WyaJFlh5faeuNpZm6OYZg0lmfC",
-    "saves": [],
-    "status": 1,
-    "createdAt": "2024-02-19T14:36:54.871Z",
-    "updatedAt": "2024-02-25T13:13:12.155Z",
-    "__v": 0,
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQzNjc4NjQ2OTdjZDA2YTJiNTFjYzYiLCJpYXQiOjE3MDg4NjY3OTJ9.KNkNEv6PRXFVRTMdmlLvJN9R21F0_aMC4WwJa0wSTHs",
-    "address": "",
-    "avatar": "https://storage.googleapis.com/coursera-replica.appspot.com/images/1708353715862.jpg",
-    "bio": "I am admin"
-}
+export const INITIAL_USER_INFO = {}
 
 const INITIAL_STATE = {
   userInfo: INITIAL_USER_INFO,
@@ -31,8 +17,26 @@ const AuthContext = createContext(INITIAL_STATE);
 
 export function AuthProvider({ children }) {
   const [userInfo, setUserInfo] = useState(INITIAL_USER_INFO);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkAuth = async () => {
+    try {
+      const response = await getInfoApi();
+      if (response) {
+        setUserInfo(response);
+        setIsAuthenticated(true);
+      } else localStorage.removeItem('token');
+    } catch (error) {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) checkAuth();
+    setIsLoading(false)
+  }, []);
 
   const value = {
     userInfo,
@@ -40,6 +44,7 @@ export function AuthProvider({ children }) {
     isLoading,
     isAuthenticated,
     setIsAuthenticated,
+    checkAuth
   };
 
   return (

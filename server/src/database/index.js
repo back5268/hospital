@@ -29,4 +29,4 @@ const connectDB = () => {
 };
 
 const sequelize = connectDB()
-export { sequelize, connectDB };
+export default { sequelize, connectDB };

@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopBar from './top-bar';
 import Sidebar from './side-bar';
-import { INITIAL_USER_INFO, useAuthContext } from '@context/AuthContext';
+import { useAuthContext } from '@context/AuthContext';
 import { useToastState } from '@store';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const [isShow, setIsShow] = useState(true);
-  const { setUserInfo, setIsAuthenticated } = useAuthContext();
+  const { setUserInfo, setIsAuthenticated, userInfo } = useAuthContext();
   const { showToast } = useToastState();
 
   const onSignOut = () => {

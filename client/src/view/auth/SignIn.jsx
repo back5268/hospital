@@ -5,9 +5,15 @@ import { SigninValidation } from '@lib/validation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
+import { useToastState } from '@store';
+import { useAuthContext } from '@context/AuthContext';
+import { getInfoApi, signinApi } from '@api/auth';
 
 const SignIn = () => {
-  const isPending =false
+  const navigate = useNavigate();
+  const { showToast } = useToastState();
+  const { setUserInfo, setIsAuthenticated } = useAuthContext();
 
   const {
     register,
@@ -17,7 +23,18 @@ const SignIn = () => {
     resolver: yupResolver(SigninValidation)
   });
   const onSubmit = async (data) => {
-
+    const response = await signinApi(data);
+    if (response) {
+      localStorage.setItem('token', response);
+      const res = await getInfoApi();
+      console.log(res);
+      if (res) {
+        setUserInfo(res);
+        setIsAuthenticated(true);
+        showToast({ title: 'Đăng nhập thành công', severity: 'success' });
+        navigate('/');
+      }
+    }
   };
 
   return (
@@ -30,8 +47,7 @@ const SignIn = () => {
             <CheckBox id="remember" label="Nhớ mật khẩu" />
             <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
           </div>
-          <Button className="w-full flex gap-4" type="submit" disabled={isPending}>
-            {isPending && <Loading size={4} severity="neutral" />}
+          <Button className="w-full flex gap-4" type="submit">
             Sign in
           </Button>
           <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">

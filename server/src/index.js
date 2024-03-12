@@ -3,7 +3,7 @@ import morgan from "morgan";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import cors from 'cors';
-import { connectDB } from "./database/index.js";
+import db from "./database/index.js";
 import { routes } from "./routes/index.js";
 
 dotenv.config();
@@ -31,6 +31,6 @@ app.use((err, req, res, next)=>{
 });
 
 app.listen(PORT, ()=>{
-    connectDB();
+    db.connectDB();
     console.log(`Server running on port ${PORT}`);
 })

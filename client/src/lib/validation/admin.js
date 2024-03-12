@@ -6,7 +6,6 @@ export const UserValidation = yup.object({
   fullName: yup.string().required('Họ tên không được bỏ trống!'),
   password: yup
     .string()
-    .min(6, 'Mật khẩu cần dài ít nhất 6 ký tự!')
     .required('Mật khẩu không được bỏ trống!')
 });
 
