@@ -2,29 +2,22 @@ import express from "express";
 import morgan from "morgan";
 import createError from "http-errors";
 import dotenv from "dotenv";
-import connectDB from "./helpers/init_mongodb.js";
-import {verifyAccessToken} from './helpers/jwt_helper.js';
 import cors from 'cors';
+import { connectDB } from "./database/index.js";
+import { routes } from "./routes/index.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
 
 const app = express();
-// Ghi log khi cos request call api
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-// Router:
-app.get("/", verifyAccessToken, async(req, res, next)=>{
-    console.log(req.headers['authorization']);
-    res.send("Hello from Express");
-});
-
-// Chỉ định middleware kiểm soát requests không hợp lệ
+routes(app);
 app.use(async(req, res, next)=>{
-    next(createError.NotFound()); // Có thể bổ sung message trong hàm NotFound
+    next(createError.NotFound());
 })
 
 app.use((err, req, res, next)=>{
@@ -36,7 +29,6 @@ app.use((err, req, res, next)=>{
         }
     });
 });
-
 
 app.listen(PORT, ()=>{
     connectDB();
