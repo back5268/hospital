@@ -8,9 +8,7 @@ export const authMiddleware = async (req, res, next) => {
   if (!token) return res.status(401).json({ status: false, mess: 'Token không hợp lệ!' });
   try {
     const checkToken = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
-    console.log(checkToken, 11);
     const userInfo = await User.findOne({ where: {user_id: checkToken.user_id}, raw: true });
-    console.log(userInfo, 11);
 
     if (!userInfo) return res.status(401).json({ status: false, mess: 'Token không hợp lệ!' });
     req.userInfo = userInfo;

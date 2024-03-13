@@ -6,10 +6,15 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import SendOtpInput from './shared/SendOtpInput';
+import { confirmPasswordApi, sendOtpForgotPasswordApi } from '@api/auth';
+import { useNavigate } from 'react-router-dom';
+import { useToastState } from '@store';
 
-const SignIn = () => {
+const ForgotPassword = () => {
+  const navigate = useNavigate();
+  const { showToast } = useToastState();
   const [isSend, setIsSend] = useState();
-  const isPending =false
+  const [isPending, setIsPending] = useState();
 
   const {
     register,
@@ -21,25 +26,27 @@ const SignIn = () => {
   });
 
   const onSubmit = async (data) => {
-
+    setIsPending(true);
+    const response = await confirmPasswordApi(data);
+    setIsPending(false);
+    showToast({ title: 'Đổi mật khẩu thành công', severity: 'success' });
+    navigate('/auth/signin');
   };
 
   return (
     <FormAuth title="Forgot Password" subTitle="Nhập thông tin để tiếp tục">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4">
-          <InputFormAuth id="email" label="Email (*)" type="email" register={register} errors={errors} />
           <InputFormAuth id="username" label="Tài khoản (*)" register={register} errors={errors} />
           <InputFormAuth id="password" label="Mật khẩu (*)" type="password" register={register} errors={errors} />
           <SendOtpInput
             id="otp"
             register={register}
             errors={errors}
-            email={watch('email')}
             username={watch('username')}
             isSend={isSend}
             setIsSend={setIsSend}
-            api={() => {}}
+            api={sendOtpForgotPasswordApi}
           />
           <div className="flex items-center justify-between">
             <CheckBox id="remember" label="Đồng ý điều khoản và dịch vụ" />
@@ -62,4 +69,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default ForgotPassword;

@@ -20,14 +20,3 @@ export const UserInfoValidation = yup.object({
   username: yup.string().required('Tài khoản không được bỏ trống!'),
   fullName: yup.string().required('Họ tên không được bỏ trống!')
 });
-
-export const ChangePasswordValidation = yup.object({
-  password: yup
-    .string()
-    .min(6, 'Mật khẩu cần dài ít nhất 6 ký tự!')
-    .required('Mật khẩu không được bỏ trống!'),
-  newPassword: yup
-    .string()
-    .min(6, 'Mật khẩu cần dài ít nhất 6 ký tự!')
-    .required('Mật khẩu không được bỏ trống!')
-});

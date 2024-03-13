@@ -4,12 +4,14 @@ import Sidebar from './side-bar';
 import { useAuthContext } from '@context/AuthContext';
 import { useToastState } from '@store';
 import { useNavigate } from 'react-router-dom';
+import ChangePassword from './top-bar/ChangePassword';
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const [isShow, setIsShow] = useState(true);
   const { setUserInfo, setIsAuthenticated, userInfo } = useAuthContext();
   const { showToast } = useToastState();
+  const [show, setShow] = useState(false);
 
   const onSignOut = () => {
     setUserInfo({});
@@ -21,7 +23,8 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="m-0 antialiased font-normal dark:bg-slate-900 text-base leading-default text-slate-500">
-      <TopBar isShow={isShow} setIsShow={setIsShow} onSignOut={onSignOut} />
+      <ChangePassword show={show} setShow={setShow} />
+      <TopBar isShow={isShow} setIsShow={setIsShow} onSignOut={onSignOut} setShow={setShow} />
       <div className="-z-10 fixed min-h-48 w-full top-0 bg-cover" style={{ backgroundImage: `url(${'/images/background.jpg'})`}}>
         <span className="fixed top-0 left-0 w-full min-h-48 bg-blue-500 opacity-40"></span>
       </div>

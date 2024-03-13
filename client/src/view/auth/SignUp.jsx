@@ -5,43 +5,41 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormAuth, Loading } from '@components/base';
-import SendOtpInput from './shared/SendOtpInput';
+import { useNavigate } from 'react-router-dom';
+import { useToastState } from '@store';
+import { signupApi } from '@api/auth';
 
 const SignIn = () => {
-  const [isSend, setIsSend] = useState();
-  const isPending =false
+  const navigate = useNavigate();
+  const [isPending, setIsPending] = useState();
+  const { showToast } = useToastState();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(SignupValidation)
   });
-  
-  const onSubmit = async (data) => {
 
+  const onSubmit = async (data) => {
+    setIsPending(true);
+    const response = await signupApi(data);
+    setIsPending(false);
+    if (response) {
+      showToast({ title: 'Đăng Ký tài khoản thành công', severity: 'success' });
+      navigate('/auth/signin');
+    }
   };
 
   return (
     <FormAuth title="Sign Up" subTitle="Nhập thông tin để tiếp tục">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4">
-          <InputFormAuth id="fullName" label="Họ tên (*)" register={register} errors={errors} />
-          <InputFormAuth id="email" label="Email (*)" type="email" disabled={isSend} register={register} errors={errors} />
-          <InputFormAuth id="username" label="Tài khoản (*)" disabled={isSend} register={register} errors={errors} />
+          <InputFormAuth id="full_name" label="Họ tên (*)" register={register} errors={errors} />
+          <InputFormAuth id="email" label="Email (*)" type="email" register={register} errors={errors} />
+          <InputFormAuth id="username" label="Tài khoản (*)" register={register} errors={errors} />
           <InputFormAuth id="password" label="Mật khẩu (*)" type="password" register={register} errors={errors} />
-          <SendOtpInput
-            id="otp"
-            register={register}
-            errors={errors}
-            email={watch('email')}
-            username={watch('username')}
-            isSend={isSend}
-            setIsSend={setIsSend}
-            api={() => {}}
-          />
           <div className="flex items-center justify-between">
             <CheckBox id="remember" label="Đồng ý điều khoản và dịch vụ" />
           </div>

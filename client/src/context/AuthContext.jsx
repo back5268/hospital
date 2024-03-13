@@ -1,6 +1,7 @@
 import { getInfoApi } from '@api/auth';
 import { Loading } from '@components/base';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const INITIAL_USER_INFO = {}
 
@@ -16,6 +17,7 @@ const INITIAL_STATE = {
 const AuthContext = createContext(INITIAL_STATE);
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState(INITIAL_USER_INFO);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,11 +25,16 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const response = await getInfoApi();
+      setIsLoading(false)
       if (response) {
         setUserInfo(response);
         setIsAuthenticated(true);
-      } else localStorage.removeItem('token');
+      } else {
+        localStorage.removeItem('token');
+        navigate('/auth/signin')
+      }
     } catch (error) {
+      navigate('/auth/signin')
       return false;
     }
   };
@@ -35,7 +42,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) checkAuth();
-    setIsLoading(false)
+    else {
+      setIsLoading(false)
+      navigate('/auth/signin')
+    }
   }, []);
 
   const value = {

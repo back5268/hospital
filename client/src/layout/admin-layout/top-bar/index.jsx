@@ -3,7 +3,7 @@ import AvatarSection from './AvatarSection';
 import NotifySection from './notify-section';
 
 const TopBar = (props) => {
-  const { isShow, setIsShow, onSignOut } = props;
+  const { isShow, setIsShow, onSignOut, setShow } = props;
 
   return (
     <div className="fixed top-0 inset-x-0 text-white z-20">
@@ -11,7 +11,7 @@ const TopBar = (props) => {
         <div className="flex items-center w-full h-full justify-end">
           <div className="flex gap-4 items-center">
             <NotifySection />
-            <AvatarSection mode='admin' onSignOut={onSignOut} />
+            <AvatarSection mode='admin' onSignOut={onSignOut} setShow={setShow} />
           </div>
         </div>
       </div>

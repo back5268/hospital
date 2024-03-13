@@ -29,7 +29,6 @@ const Filter = ({ setParams }) => {
 };
 
 const Users = () => {
-  const { userInfo, setUserInfo } = useAuthContext();
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
   const [show, setShow] = useState(false);

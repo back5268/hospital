@@ -1,12 +1,17 @@
 import { Loading } from '@components/base';
 import { Button } from '@components/uiCore';
-import { REGEX } from '@constant';
-import React from 'react';
+import { useToastState } from '@store';
+import React, { useState } from 'react';
 
-const SendOtpInput = ({ id, register = () => {}, errors = {}, email, username, isSend, setIsSend, api }) => {
-    const isPending =false
+const SendOtpInput = ({ id, register = () => {}, errors = {}, username, isSend, setIsSend, api }) => {
+  const { showToast } = useToastState();
+  const [isPending, setIsPending] = useState();
   const onSendOtp = async () => {
-
+    setIsPending(true);
+    const response = await api({ username });
+    setIsPending(false);
+    showToast({ title: `Đã gửi mã OTP đến email`, severity: 'success' });
+    setIsSend(true);
   };
 
   return (
@@ -22,12 +27,7 @@ const SendOtpInput = ({ id, register = () => {}, errors = {}, email, username, i
         aria-describedby="button-addon1"
         {...register(id)}
       />
-      <Button
-        onClick={onSendOtp}
-        disabled={!(username && REGEX.C_EMAIL.test(email)) || isSend || isPending}
-        id="button-addon1"
-        className="!py-3.5"
-      >
+      <Button onClick={onSendOtp} disabled={!username || isSend || isPending} id="button-addon1" className="!py-3.5">
         {isPending && <Loading size={4} severity="neutral" />}
         Gửi Otp
       </Button>

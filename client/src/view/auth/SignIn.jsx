@@ -27,7 +27,6 @@ const SignIn = () => {
     if (response) {
       localStorage.setItem('token', response);
       const res = await getInfoApi();
-      console.log(res);
       if (res) {
         setUserInfo(res);
         setIsAuthenticated(true);

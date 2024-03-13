@@ -10,25 +10,25 @@ dotenv.config();
 const PORT = process.env.PORT;
 
 const app = express();
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 routes(app);
-app.use(async(req, res, next)=>{
-    next(createError.NotFound());
-})
+// app.use(async(req, res, next)=>{
+//     next(createError.NotFound());
+// })
 
-app.use((err, req, res, next)=>{
-    res.status(err.status || 500);
-    res.send({
-        error: {
-            status: err.status || 500,
-            message: err.message,
-        }
-    });
-});
+// app.use((err, req, res, next)=>{
+//     res.status(err.status || 500);
+//     res.send({
+//         error: {
+//             status: err.status || 500,
+//             message: err.message,
+//         }
+//     });
+// });
 
 app.listen(PORT, ()=>{
     db.connectDB();
