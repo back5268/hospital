@@ -3,8 +3,8 @@ import { InputFormV2 } from '@components/form';
 import { useGetParams } from '@hook';
 import { DataFilter, FormList } from '@components/base';
 import { useNavigate } from 'react-router-dom';
+import { listDrugApi } from '@api/drug';
 import { useGetApi } from '@hook/useGetApi';
-import { listUserApi } from '@api/user';
 
 const Filter = ({ setParams }) => {
   const [filter, setFilter] = useState({});
@@ -14,42 +14,42 @@ const Filter = ({ setParams }) => {
       <InputFormV2
         value={filter.keySearch}
         onChange={(e) => setFilter({ ...filter, keySearch: e.target.value })}
-        label="Tìm kiếm theo tên nhân viên"
+        label="Tìm kiếm theo tên, mã thuốc"
       />
     </DataFilter>
   );
 };
 
-const Users = () => {
+const Drugs = () => {
   const navigate = useNavigate();
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
-  const data = useGetApi(listUserApi, {}, [])
+  const data = useGetApi(listDrugApi, {}, [])
+  console.log(data);
 
   const columns = [
-    { label: 'Tài khoản', field: 'username'},
-    { label: 'Họ tên', field: 'full_name' },
-    { label: 'Email', field: 'email' },
-    { label: 'Số điện thoại', field: 'phone' },
-    { label: 'Mã nhân viên', field: 'code' },
-    { label: 'Địa chỉ', field: 'address' },
+    { label: 'Tên thuốc', field: 'name'},
+    { label: 'Mã thuốc', field: 'code_value' },
+    { label: 'Giá', field: 'price' },
+    { label: 'Tác dụng phụ', field: 'side_effect' },
   ];
 
   return (
     <FormList
-      title="Danh sách nhân viên"
+      title="Quản lý thuốc"
       data={data}
       totalRecord={data?.length}
       columns={columns}
       params={params}
       setParams={setParams}
       baseActions={['insert', 'detail']}
-      actionsInfo={{ onViewDetail: (item) => navigate(`/users/detail/${item.user_id}`) }}
-      headerInfo={{ onInsert: () => navigate('/users/insert') }}
+      actionsInfo={{ onViewDetail: (item) => navigate(`/drugs/detail/${item.medication_id}`) }}
+      headerInfo={{ onInsert: () => navigate('/drugs/insert') }}
+      statusInfo={{}}
     >
       <Filter setParams={setParams} />
     </FormList>
   );
 };
 
-export default Users;
+export default Drugs;

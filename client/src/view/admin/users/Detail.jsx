@@ -1,47 +1,42 @@
-import { UploadImage, InputFormDetail, MultiRadio, SwitchForm, TextAreaForm } from '@components/form';
-import { UserValidation } from '@lib/validation';
-import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useEffect, useState } from 'react';
+import { InputFormDetail, TextAreaForm } from '@components/form';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import {addUserApi, getInfoApi, updateUserApi} from '@api';
 import { FormDetail } from '@components/base';
-import { checkEqualProp } from '@utils';
-import { userRoles } from '@constant';
-import {useAuthContext} from "@context/AuthContext";
+import { useNavigate, useParams } from 'react-router-dom';
+import { useGetApi } from '@hook/useGetApi';
+import { addUserApi, listUserApi } from '@api/user';
+import { SigninValidation, SignupValidation } from '@lib/validation';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const defaultValues = {
-  fullName: '',
+  full_name: '',
+  code: '',
   username: '',
   email: '',
-  address: '',
-  bio: '',
-  password: '',
-  role: 'user',
-  status: 1
+  phone: '',
+  address: ''
 };
 
-const DetailUser = (props) => {
-  const { userInfo, setUserInfo } = useAuthContext()
-  const { show, setShow, setParams, data } = props;
-  const [avatar, setAvatar] = useState(null);
-  const isUpdate = typeof show === 'string';
-  const item = isUpdate ? data.find((d) => d._id === show) : {};
+const DetailUser = () => {
+  const navigate = useNavigate()
+  const { _id } = useParams();
+  const isUpdate = Boolean(_id);
+  const data = useGetApi(listUserApi, {}, []);
+  const item = data.find((c) => Number(c.user_id) === Number(_id));
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    setValue,
-    reset
+    setValue
   } = useForm({
-    resolver: yupResolver(UserValidation),
+    resolver: yupResolver(SignupValidation),
     defaultValues
   });
 
   useEffect(() => {
-    if (isUpdate) {
-      if (item.avatar) setAvatar(item.avatar)
+    if (isUpdate && item) {
       for (const key in defaultValues) {
         setValue(key, item[key]);
       }
@@ -49,53 +44,28 @@ const DetailUser = (props) => {
   }, [item]);
 
   const handleData = (data) => {
-    const newData = { ...data, status: data.status ? 1 : 0 };
-    if (avatar) newData.formData = { avatar }
-    else if (item.avatar) newData.avatar = ""
-    if (isUpdate) return { ...checkEqualProp(newData, item), status: data.status ? 1 : 0, _id: show };
-    else return newData;
+    if (isUpdate) return {};
+    else return data;
   };
-
-  const onSuccess = async () => {
-    if (show === userInfo._id) {
-      const response = await getInfoApi();
-      if (response) {
-        setUserInfo(response);
-      } else localStorage.removeItem('token');
-    }
-  }
 
   return (
     <FormDetail
-      title="người dùng"
-      show={show}
-      setShow={() => {
-        setShow(false);
-        setAvatar(null)
-        reset();
-      }}
+      type={'normal'}
+      title="nhân viên"
       isUpdate={isUpdate}
       insertApi={addUserApi}
-      updateApi={updateUserApi}
       handleData={handleData}
       handleSubmit={handleSubmit}
-      setParams={setParams}
-      onSuccess={onSuccess}
+      onSuccess={() => navigate("/users")}
     >
       <div className={'flex flex-wrap'}>
-        <div className="w-4/12 p-2">
-          <UploadImage label="Ảnh đại diện" data={avatar} setData={setAvatar} />
-        </div>
-        <div className="flex flex-wrap w-8/12">
-          <InputFormDetail id="fullName" label="Họ tên (*)" register={register} errors={errors} />
-          <InputFormDetail id="username" label="Tài khoản (*)" register={register} errors={errors} />
-          <InputFormDetail id="email" label="Email (*)" register={register} errors={errors} />
-          <InputFormDetail id="password" label="Mật khẩu (*)" type="password" register={register} errors={errors} />
-          <InputFormDetail id="address" label="Địa chỉ" register={register} />
-          <SwitchForm id="status" label="Trạng thái (*)" watch={watch} setValue={setValue} />
-          <TextAreaForm id="bio" label="Mô tả" className="w-full p-2" watch={watch} setValue={setValue} />
-          <MultiRadio data={userRoles} value={watch('role')} onChange={(e) => setValue('role', e)} />
-        </div>
+        <InputFormDetail id="full_name" label="Tên nhân viên (*)" register={register} errors={errors} />
+        <InputFormDetail id="username" label="Tài khoản (*)" register={register} errors={errors} />
+        <InputFormDetail id="password" type="password" label="Mật khẩu (*)" register={register} errors={errors} />
+        <InputFormDetail id="email" label="Email" register={register} errors={errors} />
+        <InputFormDetail id="phone" label="Số điện thoại" register={register} errors={errors} />
+        <InputFormDetail id="code" label="Mã nhân viên" register={register} errors={errors} />
+        <TextAreaForm id="address" label="Địa chỉ" className="w-full p-2" watch={watch} setValue={setValue} />
       </div>
     </FormDetail>
   );

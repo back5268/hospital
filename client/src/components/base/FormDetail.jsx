@@ -40,14 +40,14 @@ const FormDetail = (props) => {
     size
   } = props;
   const isModal = type === 'modal';
-  const newTitle = `${isUpdate ? 'Cập nhật' : 'Thêm mới'} ${title && String(title).toLocaleLowerCase()} thành công`;
+  const newTitle = `${isUpdate ? 'Cập nhật' : 'Thêm mới'} ${title && String(title).toLocaleLowerCase()}`;
 
   const onSubmit = async (e) => {
     const data = handleData(e);
     setLoading(true);
     const response = isUpdate ? await updateApi(data) : await insertApi(data);
     setLoading(false);
-    showToast({ title: newTitle, severity: 'success' });
+    showToast({ title: `${newTitle} thành công!`, severity: 'success' });
     setShow();
     setParams();
     onSuccess();

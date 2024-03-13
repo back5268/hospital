@@ -22,7 +22,7 @@ const DataTable = (props) => {
     setParams = () => {},
     actionsInfo = {},
     headerInfo = {},
-    statusInfo = {},
+    statusInfo,
     baseActions = [],
     rows,
     onSuccess = () => {},
@@ -30,7 +30,7 @@ const DataTable = (props) => {
   } = props;
   const { onViewDetail = () => {}, deleteApi = () => {}, handleDelete = (item) => ({ _id: item._id }) } = actionsInfo;
   const { onInsert = () => {}, onImport = () => {}, exportApi } = headerInfo;
-  const { changeStatusApi = () => {}, handleChangeStatus = (item) => ({ _id: item._id, status: item.status ? 0 : 1 }) } = statusInfo;
+  const { changeStatusApi = () => {}, handleChangeStatus = (item) => ({ _id: item._id, status: item.status ? 0 : 1 }) } = statusInfo || {};
 
   const onDelete = (item) => {
     showConfirm({
@@ -71,7 +71,7 @@ const DataTable = (props) => {
 
   const isActions = baseActions.includes('detail') || baseActions.includes('delete');
   const isHeader = baseActions.includes('insert') || baseActions.includes('import') || baseActions.includes('export');
-  const isStatus = Boolean(statusInfo.changeStatusApi);
+  const isStatus = Boolean(statusInfo);
 
   useEffect(() => {
     if (hideParams) return;

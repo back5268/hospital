@@ -1,46 +1,34 @@
 import DataTypes from "sequelize";
 import db from "../database/index.js";
 
-const User = db.sequelize.define(
-  "user",
+const Drug = db.sequelize.define(
+  "medication",
   {
-    user_id: {
+    medication_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    full_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    phone: {
+    name: {
       type: DataTypes.STRING,
     },
-    password: {
+    description: {
       type: DataTypes.STRING,
     },
-    role: {
+    status: {
       type: DataTypes.STRING,
     },
-    address: {
+    price: {
       type: DataTypes.STRING,
     },
-    otp: {
+    side_effect: {
       type: DataTypes.STRING,
     },
-    code: {
+    code_value: {
       type: DataTypes.STRING,
     },
-    last_login: {
-      type: DataTypes.DATE,
+    expiry: {
+      type: DataTypes.STRING,
     },
   },
   {
@@ -49,4 +37,4 @@ const User = db.sequelize.define(
   }
 );
 
-export default User;
+export default Drug;
