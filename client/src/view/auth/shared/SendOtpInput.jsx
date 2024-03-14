@@ -10,8 +10,10 @@ const SendOtpInput = ({ id, register = () => {}, errors = {}, username, isSend, 
     setIsPending(true);
     const response = await api({ username });
     setIsPending(false);
-    showToast({ title: `Đã gửi mã OTP đến email`, severity: 'success' });
-    setIsSend(true);
+    if (response) {
+      showToast({ title: `Đã gửi mã OTP đến email`, severity: 'success' });
+      setIsSend(true);
+    }
   };
 
   return (

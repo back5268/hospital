@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { FormDetail } from '@components/base';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetApi } from '@hook/useGetApi';
-import { addUserApi, listUserApi } from '@api/user';
+import { addUserApi, listUserApi, updateUserApi } from '@api/user';
 import { SigninValidation, SignupValidation } from '@lib/validation';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -14,11 +14,12 @@ const defaultValues = {
   username: '',
   email: '',
   phone: '',
-  address: ''
+  address: '',
+  password: ""
 };
 
 const DetailUser = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { _id } = useParams();
   const isUpdate = Boolean(_id);
   const data = useGetApi(listUserApi, {}, []);
@@ -44,7 +45,7 @@ const DetailUser = () => {
   }, [item]);
 
   const handleData = (data) => {
-    if (isUpdate) return {};
+    if (isUpdate) return { ...data, id: _id };
     else return data;
   };
 
@@ -54,9 +55,10 @@ const DetailUser = () => {
       title="nhân viên"
       isUpdate={isUpdate}
       insertApi={addUserApi}
+      updateApi={updateUserApi}
       handleData={handleData}
       handleSubmit={handleSubmit}
-      onSuccess={() => navigate("/users")}
+      onSuccess={() => navigate('/users')}
     >
       <div className={'flex flex-wrap'}>
         <InputFormDetail id="full_name" label="Tên nhân viên (*)" register={register} errors={errors} />

@@ -1,9 +1,9 @@
-import { UploadImage, InputFormDetail, SwitchForm, TextAreaForm } from '@components/form';
+import { InputFormDetail, SwitchForm, TextAreaForm } from '@components/form';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormDetail } from '@components/base';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addDrugApi, listDrugApi } from '@api/drug';
+import { addDrugApi, listDrugApi, updateDrugApi } from '@api/drug';
 import { useGetApi } from '@hook/useGetApi';
 
 const defaultValues = {
@@ -41,7 +41,7 @@ const DetailDrug = () => {
   }, [item]);
 
   const handleData = (data) => {
-    if (isUpdate) return {};
+    if (isUpdate) return { ...data, id: _id };
     else return data;
   };
 
@@ -51,6 +51,7 @@ const DetailDrug = () => {
       title="thuốc"
       isUpdate={isUpdate}
       insertApi={addDrugApi}
+      updateApi={updateDrugApi}
       handleData={handleData}
       handleSubmit={handleSubmit}
       onSuccess={() => navigate("/drugs")}

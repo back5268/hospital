@@ -36,7 +36,7 @@ const DataFilter = (props) => {
       return {
         page: pre.page || 1,
         limit: pre.limit || 10,
-        render: pre.render,
+        render: !pre.render,
         ...removeUndefinedProps(filters)
       };
     });

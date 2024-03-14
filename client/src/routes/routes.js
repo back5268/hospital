@@ -4,6 +4,8 @@ import DetailDrug from '@view/admin/drugs/Detail';
 import Dashboard from '@view/admin/dashboard';
 import Users from '@view/admin/users';
 import DetailUser from '@view/admin/users/Detail';
+import Medicals from '@view/admin/medical';
+import DetailMedical from '@view/admin/medical/Detail';
 
 const routes = [
   { path: '/auth/signin', element: SignIn, public: true },
@@ -14,6 +16,10 @@ const routes = [
   { path: '/drugs', element: Drugs, layout: 'admin' },
   { path: '/drugs/insert', element: DetailDrug, layout: 'admin' },
   { path: '/drugs/detail/:_id', element: DetailDrug, layout: 'admin' },
+
+  { path: '/medicals', element: Medicals, layout: 'admin' },
+  { path: '/medicals/insert', element: DetailMedical, layout: 'admin' },
+  { path: '/medicals/detail/:_id', element: DetailMedical, layout: 'admin' },
 
   { path: '/users', element: Users, layout: 'admin' },
   { path: '/users/insert', element: DetailUser, layout: 'admin' },

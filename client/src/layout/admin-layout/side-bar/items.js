@@ -11,5 +11,6 @@ import { BiDevices } from 'react-icons/bi';
 export const items = [
   { label: 'Dashboard', icon: BiSolidDashboard, route: '/' },
   { label: 'Danh sách nhân viên', icon: BiUser, route: '/users' },
-  { label: 'Quản lý thuốc', icon: BiBookAlt, route: '/drugs' }
+  { label: 'Quản lý thuốc', icon: BiBookAlt, route: '/drugs' },
+  { label: 'Hồ sơ khám bệnh', icon: BiBookAlt, route: '/medicals' },
 ];

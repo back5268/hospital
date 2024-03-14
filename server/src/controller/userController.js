@@ -44,7 +44,30 @@ const addUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id, username, email, full_name, phone, address, code } =
+      req.body;
+
+    const data = await User.update(
+      {
+        email,
+        username,
+        full_name,
+        phone,
+        address,
+        code,
+      },
+      { where: { user_id: id } }
+    );
+    res.json({ status: true, data });
+  } catch (error) {
+    res.status(500).json({ status: false, mess: error.toString() });
+  }
+};
+
 export default {
   listUser,
   addUser,
+  updateUser
 };

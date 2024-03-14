@@ -3,8 +3,8 @@ import { InputFormV2 } from '@components/form';
 import { useGetParams } from '@hook';
 import { DataFilter, FormList } from '@components/base';
 import { useNavigate } from 'react-router-dom';
-import { listDrugApi } from '@api/drug';
 import { useGetApi } from '@hook/useGetApi';
+import { listMedicalApi } from '@api/medical';
 
 const Filter = ({ setParams }) => {
   const [filter, setFilter] = useState({});
@@ -12,43 +12,43 @@ const Filter = ({ setParams }) => {
   return (
     <DataFilter filter={filter} setFilter={setFilter} setParams={setParams} className={'xs:w-full lg:w-9/12'}>
       <InputFormV2
-        value={filter.keySearch}
-        onChange={(e) => setFilter({ ...filter, keySearch: e.target.value })}
-        label="Tìm kiếm theo tên, mã thuốc"
+        value={filter.name}
+        onChange={(e) => setFilter({ ...filter, name: e.target.value })}
+        label="Tìm kiếm theo tên bệnh nhân"
       />
     </DataFilter>
   );
 };
 
-const Drugs = () => {
+const Medicals = () => {
   const navigate = useNavigate();
   const initParams = useGetParams();
   const [params, setParams] = useState(initParams);
-  const data = useGetApi(listDrugApi, {}, [])
+  const data = useGetApi(listMedicalApi, params, [])
 
   const columns = [
-    { label: 'Tên thuốc', field: 'name'},
-    { label: 'Mã thuốc', field: 'code_value' },
-    { label: 'Giá', field: 'price' },
-    { label: 'Tác dụng phụ', field: 'side_effect' },
+    { label: 'Tên bệnh nhân', field: 'patients_name'},
+    { label: 'Lịch sử chẩn đoán', field: 'diagnosis_history' },
+    { label: 'Lịch sử điều trị', field: 'treatment_history' },
+    { label: 'Dị ứng', field: 'allergies' },
+    { label: 'Thuốc đang dùng', field: 'current_medication' },
   ];
 
   return (
     <FormList
-      title="Quản lý thuốc"
+      title="Quản lý hồ sơ khám bệnh"
       data={data}
       totalRecord={data?.length}
       columns={columns}
       params={params}
       setParams={setParams}
       baseActions={['insert', 'detail']}
-      actionsInfo={{ onViewDetail: (item) => navigate(`/drugs/detail/${item.medication_id}`) }}
-      headerInfo={{ onInsert: () => navigate('/drugs/insert') }}
-      statusInfo={{}}
+      actionsInfo={{ onViewDetail: (item) => navigate(`/medicals/detail/${item.medical_record_id}`) }}
+      headerInfo={{ onInsert: () => navigate('/medicals/insert') }}
     >
       <Filter setParams={setParams} />
     </FormList>
   );
 };
 
-export default Drugs;
+export default Medicals;

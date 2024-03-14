@@ -29,15 +29,17 @@ const ForgotPassword = () => {
     setIsPending(true);
     const response = await confirmPasswordApi(data);
     setIsPending(false);
-    showToast({ title: 'Đổi mật khẩu thành công', severity: 'success' });
-    navigate('/auth/signin');
+    if (response) {
+      showToast({ title: 'Đổi mật khẩu thành công', severity: 'success' });
+      navigate('/auth/signin');
+    }
   };
 
   return (
     <FormAuth title="Forgot Password" subTitle="Nhập thông tin để tiếp tục">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4">
-          <InputFormAuth id="username" label="Tài khoản (*)" register={register} errors={errors} />
+          <InputFormAuth id="username" label="Tài khoản (*)" disabled={isSend} register={register} errors={errors} />
           <InputFormAuth id="password" label="Mật khẩu (*)" type="password" register={register} errors={errors} />
           <SendOtpInput
             id="otp"

@@ -59,7 +59,12 @@ const signUp = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
-    const data = await User.create({ email, username, password: newPassword, full_name });
+    const data = await User.create({
+      email,
+      username,
+      password: newPassword,
+      full_name,
+    });
     res.json({ status: true, data });
   } catch (error) {
     res.status(500).json({ status: false, mess: error.toString() });
@@ -69,11 +74,18 @@ const signUp = async (req, res) => {
 export const sendOtpForgotPassword = async (req, res) => {
   try {
     const { username } = req.body;
-    const checkUsername = await User.findOne({
+    let user;
+    user = await User.findOne({
       where: { username },
       raw: true,
     });
-    if (!checkUsername)
+    if (!user) {
+      user = await User.findOne({
+        where: { email: username },
+        raw: true,
+      });
+    }
+    if (!user)
       return res
         .status(400)
         .json({ status: false, mess: "Không tìm thấy người dùng!" });
@@ -82,9 +94,9 @@ export const sendOtpForgotPassword = async (req, res) => {
     for (var i = 0; i < 6; i++) {
       otp += Math.floor(Math.random() * 10);
     }
-    await sendOtp({ to: checkUsername.email, otp, username });
-    await User.update({ otp }, { where: { user_id: checkUsername.user_id } });
-    res.json({ status: true });
+    await sendOtp({ to: user.email, otp, username: user.username });
+    await User.update({ otp }, { where: { user_id: user.user_id } });
+    res.json({ status: true, data: {} });
   } catch (error) {
     res.status(500).json({ status: false, mess: error.toString() });
   }
@@ -94,16 +106,24 @@ export const confirmPassword = async (req, res) => {
   try {
     const { username, otp, password } = req.body;
 
-    const checkUsername = await User.findOne({
+    let user;
+    user = await User.findOne({
       where: { username },
       raw: true,
     });
-    if (!checkUsername)
+    if (!user) {
+      user = await User.findOne({
+        where: { email: username },
+        raw: true,
+      });
+    }
+    if (!user) {
       return res
         .status(400)
         .json({ status: false, mess: "Không tìm thấy người dùng!" });
+    }
 
-    if (otp !== checkUsername.otp)
+    if (otp !== user.otp)
       return res
         .status(400)
         .json({ status: false, mess: "Mã OTP không đúng!" });
@@ -113,9 +133,9 @@ export const confirmPassword = async (req, res) => {
 
     await User.update(
       { otp: "", password: newPassword },
-      { where: { user_id: checkUsername.user_id } }
+      { where: { user_id: user.user_id } }
     );
-    res.status(201).json({ status: true });
+    res.status(201).json({ status: true, data: {} });
   } catch (error) {
     res.status(500).json({ status: false, mess: error.toString() });
   }
@@ -138,7 +158,7 @@ export const changePassword = async (req, res) => {
       { password: newPasswordz },
       { where: { user_id: req.userInfo.user_id } }
     );
-    res.status(201).json({ status: true  });
+    res.status(201).json({ status: true, data: {} });
   } catch (error) {
     res.status(500).json({ status: false, mess: error.toString() });
   }
