@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { sendOtp } from "../lib/axios/index.js";
+import { sendOtp } from "../service/authService.js";
 
 const getInfo = async (req, res) => {
   try {
